@@ -19,7 +19,7 @@ def updateBoard(board):
     print("  a b c d e f g h")
     updateScore(board, plScore, comScore)
 
-def updateScore(board, plScore, comScore):
+def updateScore(board, plScore, comScore):d
     for i in range(8):
         for j in range(8):
             if (board[i][j] == playerDisk):
