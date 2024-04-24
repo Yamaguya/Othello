@@ -16,7 +16,7 @@ class Board:
         self.board[4][3] = BLACK
         self.board[3][3] = WHITE
         self.board[4][4] = WHITE
-        self.valid_moves = []
+        self.dict_of_valid_moves = {}
 
     def draw_board(self):
         self.surface = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pygame.SRCALPHA)
@@ -43,22 +43,26 @@ class Board:
             opp = WHITE
         else:
             opp = BLACK
-        self.valid_moves = []
         for i in range(BOARD_WIDTH):
             for j in range(BOARD_HEIGHT):
                 if self.board[i][j] == color:
-                    self.valid_moves.append(self.get_piece_moves(i, j, opp))
-        return self.valid_moves
+                    piece_moves = self.get_piece_moves(i, j, opp)
+                    piece_pos = (i, j)
+                    self.dict_of_valid_moves[piece_pos] = piece_moves
+
+        return self.dict_of_valid_moves
 
     def place_piece(self, pos, color):
         if pos == None:
             return
-        print(pos)
-        if pos in self.valid_moves:
-            pygame.draw.circle(WIN, color, 
+        #print(pos)
+        for lists in self.dict_of_valid_moves.values():
+            if pos in lists:
+                pygame.draw.circle(WIN, color, 
                                ((pos[0] * SQUARE_SIZE) + SQUARE_SIZE//2, 
                                 (pos[1] * SQUARE_SIZE) + SQUARE_SIZE // 2), 
                                 SQUARE_SIZE // 2.5)
+                self.board[pos[0]][pos[1]] = color
 
     def get_piece_moves(self, row, col, opp):
         valid_squares = []
@@ -100,3 +104,14 @@ class Board:
                 return True
         else:
             return False
+        
+    def count_pieces(self):
+        white_pieces = 0
+        black_pieces = 0
+        for i in range (BOARD_WIDTH):
+            for j in range (BOARD_HEIGHT):
+                if (self.board[i][j] == WHITE):
+                    white_pieces += 1
+                elif (self.board[i][j] == BLACK):
+                    black_pieces += 1
+        print(white_pieces, " - ",black_pieces)

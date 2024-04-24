@@ -21,10 +21,12 @@ def main():
                 clicked_row = (mouse_x * BOARD_WIDTH) // WINDOW_WIDTH
                 clicked_col = (mouse_y * BOARD_HEIGHT) // WINDOW_HEIGHT
                 position = (clicked_row, clicked_col)
+                
                 if (board.is_valid(position, BLACK)):
-                    print("It's valid.")
+                    board.place_piece(position, BLACK)
                 board.place_piece(position, BLACK)
                 #print (position)
+                board.count_pieces()
         #board.get_valid_moves(BLACK)
         pygame.display.update()
 
