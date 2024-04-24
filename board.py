@@ -17,6 +17,8 @@ class Board:
         self.board[3][3] = WHITE
         self.board[4][4] = WHITE
         self.dict_of_valid_moves = {}
+        self.white_pieces = 0
+        self.black_pieces = 0
 
     def draw_board(self):
         self.surface = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pygame.SRCALPHA)
@@ -33,40 +35,34 @@ class Board:
         for i in range (BOARD_WIDTH):
             for j in range (BOARD_HEIGHT):
                 if self.board[i][j] != EMPTY:
-                    pygame.draw.circle(WIN, self.board[i][j], 
-                                       ((i * SQUARE_SIZE) + SQUARE_SIZE//2, 
-                                        (j * SQUARE_SIZE) + SQUARE_SIZE // 2), 
-                                        SQUARE_SIZE // 2.5)
+                    pygame.draw.circle(WIN, self.board[i][j], ((i * SQUARE_SIZE) + SQUARE_SIZE//2, (j * SQUARE_SIZE) + SQUARE_SIZE // 2), SQUARE_SIZE // 2.5)
 
     def get_valid_moves(self, color):
+        self.dict_of_valid_moves = {}
         if color == BLACK:
             opp = WHITE
         else:
             opp = BLACK
+
         for i in range(BOARD_WIDTH):
             for j in range(BOARD_HEIGHT):
                 if self.board[i][j] == color:
                     piece_moves = self.get_piece_moves(i, j, opp)
                     piece_pos = (i, j)
                     self.dict_of_valid_moves[piece_pos] = piece_moves
-
         return self.dict_of_valid_moves
 
     def place_piece(self, pos, color):
         if pos == None:
             return
-        #print(pos)
         for lists in self.dict_of_valid_moves.values():
             if pos in lists:
-                pygame.draw.circle(WIN, color, 
-                               ((pos[0] * SQUARE_SIZE) + SQUARE_SIZE//2, 
-                                (pos[1] * SQUARE_SIZE) + SQUARE_SIZE // 2), 
-                                SQUARE_SIZE // 2.5)
+                pygame.draw.circle(WIN, color, ((pos[0] * SQUARE_SIZE) + SQUARE_SIZE//2, (pos[1] * SQUARE_SIZE) + SQUARE_SIZE // 2), SQUARE_SIZE // 2.5)
                 self.board[pos[0]][pos[1]] = color
 
     def get_piece_moves(self, row, col, opp):
         valid_squares = []
-
+        valid_shapes = []
         # For each direction of the piece in this (row,col) check for possible moves
         for (dir_x, dir_y) in [
                 (-1, 0), (-1, 1), (0, 1), (1, 1),
@@ -76,42 +72,37 @@ class Board:
                 pos = self.check_direction(row, col, dir_x, dir_y, opp)
                 if pos:
                     valid_squares.append(pos) 
-                    pygame.draw.circle(WIN, BLUE, 
-                                       ((pos[0] * SQUARE_SIZE) + SQUARE_SIZE//2, 
-                                        (pos[1] * SQUARE_SIZE) + SQUARE_SIZE // 2), 
-                                        SQUARE_SIZE // 2.5)
+                    pygame.draw.circle(WIN, BLUE, ((pos[0] * SQUARE_SIZE) + SQUARE_SIZE//2, (pos[1] * SQUARE_SIZE) + SQUARE_SIZE // 2), SQUARE_SIZE // 2.5)
                     #WIN.blit(self.surface, (pos[0]-SQUARE_SIZE, pos[1]-SQUARE_SIZE))
         return valid_squares
     
+    # Follow through passed direction checking if there's adjacent opponent's pieces to be flipped
     def check_direction(self, row, col, dir_x, dir_y, opp):
         target_row = row + dir_y
         target_col = col + dir_x
-        if (target_row >= 0 and target_col >=0 and target_row < BOARD_HEIGHT and 
-            target_col < BOARD_WIDTH and self.board[target_row][target_col] == opp):
+        if (target_row >= 0 and target_col >=0 and target_row < BOARD_HEIGHT and target_col < BOARD_WIDTH and self.board[target_row][target_col] == opp):
             target_row += dir_y
             target_col += dir_x
-            while (target_row >= 0 and target_col >=0 and target_row < BOARD_HEIGHT and 
-                   target_col < BOARD_WIDTH and self.board[target_row][target_col] == opp):
+            while (target_row >= 0 and target_col >=0 and target_row < BOARD_HEIGHT and target_col < BOARD_WIDTH and self.board[target_row][target_col] == opp):
                 target_row += dir_y
                 target_col += dir_x
-            if (target_row >= 0 and target_col >=0 and target_row < BOARD_HEIGHT and 
-                target_col < BOARD_WIDTH and self.board[target_row][target_col] == EMPTY):
+            if (target_row >= 0 and target_col >=0 and target_row < BOARD_HEIGHT and target_col < BOARD_WIDTH and self.board[target_row][target_col] == EMPTY):
                 return (target_row, target_col)
         
+    # Check if selected move is valid
     def is_valid(self, pos, color):
-        for lists in self.get_valid_moves(color):
+        for lists in self.dict_of_valid_moves.values():
             if (pos in lists):
                 return True
-        else:
-            return False
+        return False
         
     def count_pieces(self):
-        white_pieces = 0
-        black_pieces = 0
+        self.white_pieces = 0
+        self.black_pieces = 0
         for i in range (BOARD_WIDTH):
             for j in range (BOARD_HEIGHT):
                 if (self.board[i][j] == WHITE):
-                    white_pieces += 1
+                    self.white_pieces += 1
                 elif (self.board[i][j] == BLACK):
-                    black_pieces += 1
-        print(white_pieces, " - ",black_pieces)
+                    self.black_pieces += 1
+        print(self.white_pieces, " - ", self.black_pieces)
