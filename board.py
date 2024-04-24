@@ -47,27 +47,34 @@ class Board:
         for i in range(BOARD_WIDTH):
             for j in range(BOARD_HEIGHT):
                 if self.board[i][j] == color:
-                    moves = moves + self.get_piece_moves(i, j, color, opp)
+                    moves = moves + self.get_piece_moves(i, j, opp)
 
-    def draw_valid_move(surface, pos):
-        pygame.draw.circle(WIN, BLACK, ((pos[0] * SQUARE_SIZE) + SQUARE_SIZE//2, (pos[1] * SQUARE_SIZE) + SQUARE_SIZE // 2), SQUARE_SIZE // 2.5)
-
-
-    def get_piece_moves(self, row, col, color, opp):
+    def get_piece_moves(self, row, col, opp):
         valid_squares = []
 
         # For each direction of the piece in this (row,col) check for possible moves
-        for dir_x in range(-1, 1):
-            for dir_y in range(-1, 1):
+        for (dir_x, dir_y) in [
+                (-1, 0), (-1, 1), (0, 1), (1, 1),
+                (1, 0), (1, -1), (0, -1), (-1, -1)
+            ]:
+                #print(row, col, dir_x, dir_y)
                 pos = self.check_direction(row, col, dir_x, dir_y, opp)
                 if pos:
-                    valid_squares.append(pos)
-                
+                    #print (pos)
+                    valid_squares.append(pos) 
+                    pygame.draw.circle(WIN, BLUE, ((pos[0] * SQUARE_SIZE) + SQUARE_SIZE//2, (pos[1] * SQUARE_SIZE) + SQUARE_SIZE // 2), SQUARE_SIZE // 2.5)
+                    #WIN.blit(self.surface, (pos[0]-SQUARE_SIZE, pos[1]-SQUARE_SIZE))
         return valid_squares
     
     
-    def check_direction(self, row, col, x, y, opp):
-        if (self.board[row+x][col+y] == opp):        
-            return row+x, col+y 
-        else:
-            return None
+    def check_direction(self, row, col, dir_x, dir_y, opp):
+        target_row = row + dir_y
+        target_col = col + dir_x
+        if (target_row >= 0 and target_col >=0 and target_row < BOARD_HEIGHT and target_col < BOARD_WIDTH and self.board[target_row][target_col] == opp):
+            target_row += dir_y
+            target_col += dir_x
+            while (target_row >= 0 and target_col >=0 and target_row < BOARD_HEIGHT and target_col < BOARD_WIDTH and self.board[target_row][target_col] == opp):
+                target_row += dir_y
+                target_col += dir_x
+            if (target_row >= 0 and target_col >=0 and target_row < BOARD_HEIGHT and target_col < BOARD_WIDTH and self.board[target_row][target_col] == EMPTY):
+                return (target_row, target_col)
