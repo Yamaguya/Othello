@@ -1,2 +1,2 @@
-# Reversi
-Artificial Intelligence project (Athens University of Economics and Business)
+# Othello
+Othello board game that uses alpha-beta pruning.
