@@ -22,7 +22,7 @@ class Board:
 
     def draw_board(self):
         self.surface = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pygame.SRCALPHA)
-        self.surface.fill((0, 100, 0, 128))
+        self.surface.fill((0, 100, 0, 255))
         WIN.blit(self.surface, (0,0))
         for row in range (1, ROWS):
             pygame.draw.line(WIN, BLACK, (0, row * SQUARE_SIZE), 
@@ -59,7 +59,41 @@ class Board:
             if pos in lists:
                 pygame.draw.circle(WIN, color, ((pos[0] * SQUARE_SIZE) + SQUARE_SIZE//2, (pos[1] * SQUARE_SIZE) + SQUARE_SIZE // 2), SQUARE_SIZE // 2.5)
                 self.board[pos[0]][pos[1]] = color
+                #self.flip_piece(pos, color)
+                #selected_piece = {i for i in self.dict_of_valid_moves.values() if lists[i] == pos}
+                for key, value in self.dict_of_valid_moves.items():
+                    for val in value:
+                        if (val == pos): # Find the piece which enabled the valid move and flip all the opponent's pieces between it and the selected square
+                            self.flip_pieces(key, pos, color)
+                self.draw_board()
 
+    def flip_pieces(self, start_pos, end_pos, color):
+        row_start = start_pos[1]
+        row_end = end_pos[1]
+        col_start = start_pos[0]
+        col_end = end_pos[0]
+        print(row_start, col_start, ' to ', row_end, col_end)
+        if (row_start < row_end):
+            if (col_start < col_end):
+                print("Move diagonally down right")
+            elif (col_start > col_end):
+                print("Move diagonally down left")
+        if (row_start > row_end):
+            if (col_start < col_end):
+                print("Move diagonally up right")
+            elif (col_start < col_end):
+                print("Move diagonally up left")
+        if (row_start == row_end):
+            if (col_start < col_end):
+                print("Move right")
+            elif (col_start > col_end):
+                print("Move left")
+        if (col_start == col_end):
+            if (row_start < row_end):
+                print("Move down")
+            elif (row_start > row_end):
+                print("Move up")
+        
     def get_piece_moves(self, row, col, opp):
         valid_squares = []
         valid_shapes = []
@@ -105,4 +139,4 @@ class Board:
                     self.white_pieces += 1
                 elif (self.board[i][j] == BLACK):
                     self.black_pieces += 1
-        print(self.white_pieces, " - ", self.black_pieces)
+        #print(self.white_pieces, " - ", self.black_pieces)
