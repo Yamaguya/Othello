@@ -33,11 +33,6 @@ class Board:
         self.place_piece((3,4), BLACK)
         self.place_piece((4,3), BLACK)
 
-    def place_piece(self, pos, color):
-        if pos == None:
-            return
-        pygame.draw.circle(WIN, color, ((pos[0] * SQUARE_SIZE) + SQUARE_SIZE//2, (pos[1] * SQUARE_SIZE) + SQUARE_SIZE // 2), SQUARE_SIZE // 2.5)
-    
     def get_valid_moves(self, color):
         if color == BLACK:
             opp = WHITE
@@ -48,6 +43,14 @@ class Board:
             for j in range(BOARD_HEIGHT):
                 if self.board[i][j] == color:
                     moves = moves + self.get_piece_moves(i, j, opp)
+        return moves
+
+    def place_piece(self, pos, color):
+        if pos == None:
+            return
+        print(pos)
+        if pos in get_valid_moves(color):
+            pygame.draw.circle(WIN, color, ((pos[0] * SQUARE_SIZE) + SQUARE_SIZE//2, (pos[1] * SQUARE_SIZE) + SQUARE_SIZE // 2), SQUARE_SIZE // 2.5)
 
     def get_piece_moves(self, row, col, opp):
         valid_squares = []
@@ -66,7 +69,6 @@ class Board:
                     #WIN.blit(self.surface, (pos[0]-SQUARE_SIZE, pos[1]-SQUARE_SIZE))
         return valid_squares
     
-    
     def check_direction(self, row, col, dir_x, dir_y, opp):
         target_row = row + dir_y
         target_col = col + dir_x
@@ -78,3 +80,4 @@ class Board:
                 target_col += dir_x
             if (target_row >= 0 and target_col >=0 and target_row < BOARD_HEIGHT and target_col < BOARD_WIDTH and self.board[target_row][target_col] == EMPTY):
                 return (target_row, target_col)
+        
