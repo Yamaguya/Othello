@@ -28,28 +28,28 @@ class Board:
         for col in range (1, COLS):
             pygame.draw.line(WIN, BLACK, (col * SQUARE_SIZE, 0), (col * SQUARE_SIZE, WINDOW_HEIGHT), 2)
             
-        self.place_piece((3,3), WHITE)
-        self.place_piece((4,4), WHITE)
-        self.place_piece((3,4), BLACK)
-        self.place_piece((4,3), BLACK)
+        for i in range (BOARD_WIDTH):
+            for j in range (BOARD_HEIGHT):
+                if self.board[i][j] != EMPTY:
+                    pygame.draw.circle(WIN, self.board[i][j], ((i * SQUARE_SIZE) + SQUARE_SIZE//2, (j * SQUARE_SIZE) + SQUARE_SIZE // 2), SQUARE_SIZE // 2.5)
 
     def get_valid_moves(self, color):
         if color == BLACK:
             opp = WHITE
         else:
             opp = BLACK
-        moves = []
+        self.valid_moves = []
         for i in range(BOARD_WIDTH):
             for j in range(BOARD_HEIGHT):
                 if self.board[i][j] == color:
-                    moves = moves + self.get_piece_moves(i, j, opp)
-        return moves
+                    self.valid_moves.append(self.get_piece_moves(i, j, opp))
+        return self.valid_moves
 
     def place_piece(self, pos, color):
         if pos == None:
             return
         print(pos)
-        if pos in get_valid_moves(color):
+        if pos in self.valid_moves:
             pygame.draw.circle(WIN, color, ((pos[0] * SQUARE_SIZE) + SQUARE_SIZE//2, (pos[1] * SQUARE_SIZE) + SQUARE_SIZE // 2), SQUARE_SIZE // 2.5)
 
     def get_piece_moves(self, row, col, opp):
@@ -63,7 +63,6 @@ class Board:
                 #print(row, col, dir_x, dir_y)
                 pos = self.check_direction(row, col, dir_x, dir_y, opp)
                 if pos:
-                    #print (pos)
                     valid_squares.append(pos) 
                     pygame.draw.circle(WIN, BLUE, ((pos[0] * SQUARE_SIZE) + SQUARE_SIZE//2, (pos[1] * SQUARE_SIZE) + SQUARE_SIZE // 2), SQUARE_SIZE // 2.5)
                     #WIN.blit(self.surface, (pos[0]-SQUARE_SIZE, pos[1]-SQUARE_SIZE))
@@ -81,3 +80,9 @@ class Board:
             if (target_row >= 0 and target_col >=0 and target_row < BOARD_HEIGHT and target_col < BOARD_WIDTH and self.board[target_row][target_col] == EMPTY):
                 return (target_row, target_col)
         
+    def is_valid(self, pos, color):
+        for lists in self.get_valid_moves(color):
+            if (pos in lists):
+                return True
+        else:
+            return False

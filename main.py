@@ -9,6 +9,7 @@ def main():
     clock = pygame.time.Clock()
     board = Board()
     board.draw_board()
+    board.get_valid_moves(BLACK)
     while run:
         clock.tick(FPS)
         for event in pygame.event.get():
@@ -20,9 +21,11 @@ def main():
                 clicked_row = (mouse_x * BOARD_WIDTH) // WINDOW_WIDTH
                 clicked_col = (mouse_y * BOARD_HEIGHT) // WINDOW_HEIGHT
                 position = (clicked_row, clicked_col)
+                if (board.is_valid(position, BLACK)):
+                    print("It's valid.")
                 board.place_piece(position, BLACK)
                 #print (position)
-        board.get_valid_moves(BLACK)
+        #board.get_valid_moves(BLACK)
         pygame.display.update()
 
     pygame.quit() # If loop breaks close game
