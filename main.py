@@ -24,7 +24,7 @@ def main():
                 run = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pass
-        board.draw_cubes(WIN)
+        board.draw_squares(WIN)
         pygame.display.update()
 
     pygame.quit() # If loop breaks close game
