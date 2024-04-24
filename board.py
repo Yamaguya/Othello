@@ -1,6 +1,5 @@
 import pygame
-from config import WHITE, BLACK, GREEN, ROWS, COLS, SQUARE_SIZE, WIN, WINDOW_WIDTH, WINDOW_HEIGHT
-
+from config import *
 
 class Board:
     
@@ -20,7 +19,9 @@ class Board:
         self.valid_moves = []
 
     def draw_board(self):
-        WIN.fill(GREEN)
+        self.surface = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pygame.SRCALPHA)
+        self.surface.fill((0, 100, 0, 128))
+        WIN.blit(self.surface, (0,0))
         for row in range (1, ROWS):
             pygame.draw.line(WIN, BLACK, (0, row * SQUARE_SIZE), (WINDOW_WIDTH, row * SQUARE_SIZE), 2)
         
@@ -36,3 +37,37 @@ class Board:
         if pos == None:
             return
         pygame.draw.circle(WIN, color, ((pos[0] * SQUARE_SIZE) + SQUARE_SIZE//2, (pos[1] * SQUARE_SIZE) + SQUARE_SIZE // 2), SQUARE_SIZE // 2.5)
+    
+    def get_valid_moves(self, color):
+        if color == BLACK:
+            opp = WHITE
+        else:
+            opp = BLACK
+        moves = []
+        for i in range(BOARD_WIDTH):
+            for j in range(BOARD_HEIGHT):
+                if self.board[i][j] == color:
+                    moves = moves + self.get_piece_moves(i, j, color, opp)
+
+    def draw_valid_move(surface, pos):
+        pygame.draw.circle(WIN, BLACK, ((pos[0] * SQUARE_SIZE) + SQUARE_SIZE//2, (pos[1] * SQUARE_SIZE) + SQUARE_SIZE // 2), SQUARE_SIZE // 2.5)
+
+
+    def get_piece_moves(self, row, col, color, opp):
+        valid_squares = []
+
+        # For each direction of the piece in this (row,col) check for possible moves
+        for dir_x in range(-1, 1):
+            for dir_y in range(-1, 1):
+                pos = self.check_direction(row, col, dir_x, dir_y, opp)
+                if pos:
+                    valid_squares.append(pos)
+                
+        return valid_squares
+    
+    
+    def check_direction(self, row, col, x, y, opp):
+        if (self.board[row+x][col+y] == opp):        
+            return row+x, col+y 
+        else:
+            return None
