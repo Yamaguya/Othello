@@ -63,7 +63,53 @@ class Board:
                     for val in value:
                         if (val == pos): 
                             self.flip_pieces(key, pos, color)
-                self.draw_board()
+
+    def evaluate_move(self, start_pos, end_pos, color):
+        captured_pieces = []
+        row_start = start_pos[1]
+        row_end = end_pos[1]
+        col_start = start_pos[0]
+        col_end = end_pos[0]
+        if (row_start < row_end):
+            if (col_start < col_end):
+                while (row_start < row_end and row_start < BOARD_HEIGHT-1 and col_start < BOARD_WIDTH-1): # Move diagonally down left
+                    row_start += 1
+                    col_start += 1
+                    captured_pieces.append(self.board[col_start][row_start])
+            elif (col_start > col_end):
+                while (row_start < row_end and row_start < BOARD_HEIGHT-1): # Move diagonally down left
+                    row_start += 1
+                    col_start -= 1
+                    captured_pieces.append(self.board[col_start][row_start])
+            else:
+                while (row_start < row_end and row_start < BOARD_HEIGHT-1): # Move down
+                    row_start += 1
+                    captured_pieces.append(self.board[col_start][row_start])
+        elif (row_start > row_end):
+            if (col_start < col_end):
+                while (row_start > row_end and row_start > 0 and col_start < BOARD_WIDTH-1): # Move diagonally up right
+                    row_start -= 1
+                    col_start += 1
+                    captured_pieces.append(self.board[col_start][row_start])
+            elif (col_start > col_end):
+                while (row_start > row_end and row_start > 0 and col_start > 0): # Move diagonally up left
+                    row_start -= 1
+                    col_start -= 1
+                    captured_pieces.append(self.board[col_start][row_start])
+            else:
+                while (row_start > row_end and row_start > 0):                        # Move up
+                    row_start -= 1
+                    captured_pieces.append(self.board[col_start][row_start])
+        else:
+            if (col_start < col_end):
+                while (col_start < col_end and col_start < BOARD_WIDTH):                        # Move right
+                    col_start += 1
+                    captured_pieces.append(self.board[col_start][row_start])
+            elif (col_start > col_end):
+                while (col_start > col_end and col_start > 0):                        # Move left
+                    col_start -= 1
+                    captured_pieces.append(self.board[col_start][row_start])
+        return captured_pieces
 
     def flip_pieces(self, start_pos, end_pos, color):
         row_start = start_pos[1]
@@ -155,3 +201,5 @@ class Board:
                 elif (self.board[i][j] == BLACK):
                     self.black_pieces += 1
         print("WHITE :", self.white_pieces, " - BLACK: ", self.black_pieces)
+        if (self.white_pieces == 0): print("Black wins!")
+        if (self.black_pieces == 0): print("White wins!")
