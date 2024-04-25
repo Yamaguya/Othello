@@ -12,6 +12,7 @@ def main():
     turn = 0
     current_color = BLACK
     board.get_valid_moves(current_color)
+    board.count_pieces()
     while run:
         clock.tick(FPS)
         for event in pygame.event.get():
@@ -31,7 +32,7 @@ def main():
                     else:
                         current_color = BLACK
                     turn += 1
-                board.count_pieces()
+                    board.count_pieces()
                 
         board.get_valid_moves(current_color)
         pygame.display.update()

@@ -59,8 +59,6 @@ class Board:
             if pos in lists:
                 pygame.draw.circle(WIN, color, ((pos[0] * SQUARE_SIZE) + SQUARE_SIZE//2, (pos[1] * SQUARE_SIZE) + SQUARE_SIZE // 2), SQUARE_SIZE // 2.5)
                 self.board[pos[0]][pos[1]] = color
-                #self.flip_piece(pos, color)
-                #selected_piece = {i for i in self.dict_of_valid_moves.values() if lists[i] == pos}
                 for key, value in self.dict_of_valid_moves.items():
                     for val in value:
                         if (val == pos): # Find the piece which enabled the valid move and flip all the opponent's pieces between it and the selected square
@@ -72,42 +70,59 @@ class Board:
         row_end = end_pos[1]
         col_start = start_pos[0]
         col_end = end_pos[0]
-        print(row_start, col_start, ' to ', row_end, col_end)
         if (row_start < row_end):
             if (col_start < col_end):
-                print("Move diagonally down right")
+                while (row_start < row_end): # Move diagonally down left
+                    row_start += 1
+                    col_start += 1
+                    self.board[col_start][row_start] = color
             elif (col_start > col_end):
-                print("Move diagonally down left")
-        if (row_start > row_end):
+                while (row_start < row_end): # Move diagonally down left
+                    row_start += 1
+                    col_start -= 1
+                    self.board[col_start][row_start] = color
+            else:
+                while (row_start < row_end): # Move down
+                    row_start += 1
+                    self.board[col_start][row_start] = color
+        elif (row_start > row_end):
             if (col_start < col_end):
-                print("Move diagonally up right")
-            elif (col_start < col_end):
-                print("Move diagonally up left")
-        if (row_start == row_end):
-            if (col_start < col_end):
-                print("Move right")
+                while (row_start > row_end): # Move diagonally up right
+                    row_start -= 1
+                    col_start += 1
+                    self.board[col_start][row_start] = color
             elif (col_start > col_end):
-                print("Move left")
-        if (col_start == col_end):
-            if (row_start < row_end):
-                print("Move down")
-            elif (row_start > row_end):
-                print("Move up")
+                while (row_start > row_end): # Move diagonally up left
+                    row_start -= 1
+                    col_start -= 1
+                    self.board[col_start][row_start] = color
+            else:
+                while (row_start > row_end): # Move up
+                    row_start -= 1
+                    self.board[col_start][row_start] = color
+        else:
+            if (col_start < col_end):
+                while (col_start < col_end): # Move right
+                    col_start += 1
+                    self.board[col_start][row_start] = color
+            elif (col_start > col_end):
+                while (col_start > col_end): # Move left
+                    col_start -= 1
+                    self.board[col_start][row_start] = color
         
     def get_piece_moves(self, row, col, opp):
         valid_squares = []
-        valid_shapes = []
-        # For each direction of the piece in this (row,col) check for possible moves
+        # valid_shapes = [] - To make valid moves semi-transparent
         for (dir_x, dir_y) in [
                 (-1, 0), (-1, 1), (0, 1), (1, 1),
                 (1, 0), (1, -1), (0, -1), (-1, -1)
             ]:
-                #print(row, col, dir_x, dir_y)
+                # print(row, col, dir_x, dir_y)
                 pos = self.check_direction(row, col, dir_x, dir_y, opp)
                 if pos:
                     valid_squares.append(pos) 
                     pygame.draw.circle(WIN, BLUE, ((pos[0] * SQUARE_SIZE) + SQUARE_SIZE//2, (pos[1] * SQUARE_SIZE) + SQUARE_SIZE // 2), SQUARE_SIZE // 2.5)
-                    #WIN.blit(self.surface, (pos[0]-SQUARE_SIZE, pos[1]-SQUARE_SIZE))
+                    # WIN.blit(self.surface, (pos[0]-SQUARE_SIZE, pos[1]-SQUARE_SIZE))
         return valid_squares
     
     # Follow through passed direction checking if there's adjacent opponent's pieces to be flipped
@@ -139,4 +154,4 @@ class Board:
                     self.white_pieces += 1
                 elif (self.board[i][j] == BLACK):
                     self.black_pieces += 1
-        #print(self.white_pieces, " - ", self.black_pieces)
+        print("WHITE :", self.white_pieces, " - BLACK: ", self.black_pieces)
