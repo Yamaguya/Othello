@@ -61,7 +61,7 @@ class Board:
                 self.board[pos[0]][pos[1]] = color
                 for key, value in self.dict_of_valid_moves.items():
                     for val in value:
-                        if (val == pos): # Find the piece which enabled the valid move and flip all the opponent's pieces between it and the selected square
+                        if (val == pos): 
                             self.flip_pieces(key, pos, color)
                 self.draw_board()
 
@@ -72,41 +72,41 @@ class Board:
         col_end = end_pos[0]
         if (row_start < row_end):
             if (col_start < col_end):
-                while (row_start < row_end): # Move diagonally down left
+                while (row_start < row_end):                        # Move diagonally down left
                     row_start += 1
                     col_start += 1
                     self.board[col_start][row_start] = color
             elif (col_start > col_end):
-                while (row_start < row_end): # Move diagonally down left
+                while (row_start < row_end):                        # Move diagonally down left
                     row_start += 1
                     col_start -= 1
                     self.board[col_start][row_start] = color
             else:
-                while (row_start < row_end): # Move down
+                while (row_start < row_end):                        # Move down
                     row_start += 1
                     self.board[col_start][row_start] = color
         elif (row_start > row_end):
             if (col_start < col_end):
-                while (row_start > row_end): # Move diagonally up right
+                while (row_start > row_end):                        # Move diagonally up right
                     row_start -= 1
                     col_start += 1
                     self.board[col_start][row_start] = color
             elif (col_start > col_end):
-                while (row_start > row_end): # Move diagonally up left
+                while (row_start > row_end):                        # Move diagonally up left
                     row_start -= 1
                     col_start -= 1
                     self.board[col_start][row_start] = color
             else:
-                while (row_start > row_end): # Move up
+                while (row_start > row_end):                        # Move up
                     row_start -= 1
                     self.board[col_start][row_start] = color
         else:
             if (col_start < col_end):
-                while (col_start < col_end): # Move right
+                while (col_start < col_end):                        # Move right
                     col_start += 1
                     self.board[col_start][row_start] = color
             elif (col_start > col_end):
-                while (col_start > col_end): # Move left
+                while (col_start > col_end):                        # Move left
                     col_start -= 1
                     self.board[col_start][row_start] = color
         
@@ -125,7 +125,7 @@ class Board:
                     # WIN.blit(self.surface, (pos[0]-SQUARE_SIZE, pos[1]-SQUARE_SIZE))
         return valid_squares
     
-    # Follow through passed direction checking if there's adjacent opponent's pieces to be flipped
+    # Follow through direction checking for adjacent opponent's pieces to be flipped
     def check_direction(self, row, col, dir_x, dir_y, opp):
         target_row = row + dir_y
         target_col = col + dir_x
@@ -138,7 +138,7 @@ class Board:
             if (target_row >= 0 and target_col >=0 and target_row < BOARD_HEIGHT and target_col < BOARD_WIDTH and self.board[target_row][target_col] == EMPTY):
                 return (target_row, target_col)
         
-    # Check if selected move is valid
+    # Check if clicked move is valid
     def is_valid(self, pos, color):
         for lists in self.dict_of_valid_moves.values():
             if (pos in lists):

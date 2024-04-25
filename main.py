@@ -26,12 +26,11 @@ def main():
                 position = (clicked_row, clicked_col)
                 
                 if (board.is_valid(position, current_color)):
-                    board.place_piece(position, current_color)
-                    if (turn % 2 == 0):
-                        current_color = WHITE
-                    else:
-                        current_color = BLACK
-                    turn += 1
+                    board.place_piece(position, current_color)  # Player places piece
+                    # current_color = WHITE                     # Computer's turn
+                    # minimax that returns position
+                    # board.place_piece(position, current_color) # Computer places piece
+                    current_color = BLACK                        # Player's turn, waiting for click
                     board.count_pieces()
                 
         board.get_valid_moves(current_color)
