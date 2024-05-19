@@ -19,11 +19,16 @@ class Board:
         self.dict_of_valid_moves = {}
         self.white_pieces = 0
         self.black_pieces = 0
+        self.game_status = False
+        self.valid_moves_surface = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pygame.SRCALPHA)
+        self.valid_moves_surface.fill((0, 0, 0, 0))  # Fill with fully transparent initially
+        pygame.init()
 
     def draw_board(self):
         self.surface = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pygame.SRCALPHA)
-        self.surface.fill((0, 100, 0, 255))
+        self.surface.fill((12, 100, 12, 255))
         WIN.blit(self.surface, (0,0))
+
         for row in range (1, ROWS):
             pygame.draw.line(WIN, BLACK, (0, row * SQUARE_SIZE), 
                              (WINDOW_WIDTH, row * SQUARE_SIZE), 2)
@@ -39,6 +44,7 @@ class Board:
 
     def get_valid_moves(self, color):
         self.dict_of_valid_moves = {}
+        number_of_moves = 0
         if color == BLACK:
             opp = WHITE
         else:
@@ -50,6 +56,11 @@ class Board:
                     piece_moves = self.get_piece_moves(i, j, opp)
                     piece_pos = (i, j)
                     self.dict_of_valid_moves[piece_pos] = piece_moves
+                    if (piece_moves != []):
+                        number_of_moves += 1
+                    
+        if (number_of_moves == 0):
+            self.game_status = True
         return self.dict_of_valid_moves
 
     def place_piece(self, pos, color):
@@ -63,8 +74,9 @@ class Board:
                     for val in value:
                         if (val == pos): 
                             self.flip_pieces(key, pos, color)
+                            self.count_pieces()
 
-    def evaluate_move(self, start_pos, end_pos, color):
+    def evaluate_move(self, start_pos, end_pos, color): # Possible computer move evaluation
         captured_pieces = []
         row_start = start_pos[1]
         row_end = end_pos[1]
@@ -157,8 +169,10 @@ class Board:
                     self.board[col_start][row_start] = color
         
     def get_piece_moves(self, row, col, opp):
+        # Clear the valid moves surface
+        self.valid_moves_surface.fill((0, 0, 0, 0))
+
         valid_squares = []
-        # valid_shapes = [] - To make valid moves semi-transparent
         for (dir_x, dir_y) in [
                 (-1, 0), (-1, 1), (0, 1), (1, 1),
                 (1, 0), (1, -1), (0, -1), (-1, -1)
@@ -167,8 +181,9 @@ class Board:
                 pos = self.check_direction(row, col, dir_x, dir_y, opp)
                 if pos:
                     valid_squares.append(pos) 
-                    pygame.draw.circle(WIN, BLUE, ((pos[0] * SQUARE_SIZE) + SQUARE_SIZE//2, (pos[1] * SQUARE_SIZE) + SQUARE_SIZE // 2), SQUARE_SIZE // 2.5)
-                    # WIN.blit(self.surface, (pos[0]-SQUARE_SIZE, pos[1]-SQUARE_SIZE))
+                    semi_transparent_blue = (0, 191, 255, 85)
+                    pygame.draw.circle(self.valid_moves_surface, semi_transparent_blue, ((pos[0] * SQUARE_SIZE) + SQUARE_SIZE//2, (pos[1] * SQUARE_SIZE) + SQUARE_SIZE // 2), SQUARE_SIZE // 2.5)
+        WIN.blit(self.valid_moves_surface, (0, 0))
         return valid_squares
     
     # Follow through direction checking for adjacent opponent's pieces to be flipped
@@ -203,3 +218,41 @@ class Board:
         print("WHITE :", self.white_pieces, " - BLACK: ", self.black_pieces)
         if (self.white_pieces == 0): print("Black wins!")
         if (self.black_pieces == 0): print("White wins!")
+        if (self.white_pieces + self.black_pieces == ROWS * COLS):
+            if (self.white_pieces > self.black_pieces):
+                print("White wins!")
+            elif (self.white_pieces < self.black_pieces):
+                print("Black wins!")
+            else:
+                print("Draw.")
+
+    def game_over(self):
+        if (self.game_status):
+            self.white_pieces = 0
+            self.black_pieces = 0
+            for i in range (BOARD_WIDTH):
+                for j in range (BOARD_HEIGHT):
+                    if (self.board[i][j] == WHITE):
+                        self.white_pieces += 1
+                    elif (self.board[i][j] == BLACK):
+                        self.black_pieces += 1
+
+            if (self.white_pieces > self.black_pieces):
+                print("White wins!")
+            elif (self.white_pieces < self.black_pieces):
+                print("Black wins!")
+            else:
+                print("Draw.")
+
+            game_over_font = pygame.font.SysFont(None, 48)
+            game_over_text = game_over_font.render("Game Over", True, (255, 255, 255))
+            game_over_rect = game_over_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2))
+            WIN.blit(game_over_text, game_over_rect)
+
+            pygame.display.update()
+            pygame.time.delay(2000)  # Wait for 2 seconds before quitting
+
+            return self.game_status
+        
+        return self.game_status
+        
