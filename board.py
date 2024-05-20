@@ -75,7 +75,9 @@ class Board:
         
         for lists in self.dict_of_valid_moves.values():
             if pos in lists:
-                pygame.draw.circle(WIN, color, ((pos[0] * SQUARE_SIZE) + SQUARE_SIZE//2, (pos[1] * SQUARE_SIZE) + SQUARE_SIZE // 2), SQUARE_SIZE // 2.5)
+                pygame.draw.circle(WIN, color, ((pos[0] * SQUARE_SIZE) + SQUARE_SIZE//2, 
+                                                (pos[1] * SQUARE_SIZE) + SQUARE_SIZE // 2), 
+                                                SQUARE_SIZE // 2.5)
                 self.board[pos[0]][pos[1]] = color
                 for key, value in self.dict_of_valid_moves.items():
                     for val in value:
@@ -138,41 +140,41 @@ class Board:
         col_end = end_pos[0]
         if (row_start < row_end):
             if (col_start < col_end):
-                while (row_start < row_end):                        # Move diagonally down left
+                while (row_start < row_end):                                                              # Move diagonally down left
                     row_start += 1
                     col_start += 1
                     self.board[col_start][row_start] = color
             elif (col_start > col_end):
-                while (row_start < row_end):                        # Move diagonally down left
+                while (row_start < row_end):                                                              # Move diagonally down left
                     row_start += 1
                     col_start -= 1
                     self.board[col_start][row_start] = color
             else:
-                while (row_start < row_end):                        # Move down
+                while (row_start < row_end):                                                              # Move down
                     row_start += 1
                     self.board[col_start][row_start] = color
         elif (row_start > row_end):
             if (col_start < col_end):
-                while (row_start > row_end):                        # Move diagonally up right
+                while (row_start > row_end):                                                              # Move diagonally up right
                     row_start -= 1
                     col_start += 1
                     self.board[col_start][row_start] = color
             elif (col_start > col_end):
-                while (row_start > row_end):                        # Move diagonally up left
+                while (row_start > row_end):                                                              # Move diagonally up left
                     row_start -= 1
                     col_start -= 1
                     self.board[col_start][row_start] = color
             else:
-                while (row_start > row_end):                        # Move up
+                while (row_start > row_end):                                                              # Move up
                     row_start -= 1
                     self.board[col_start][row_start] = color
         else:
             if (col_start < col_end):
-                while (col_start < col_end):                        # Move right
+                while (col_start < col_end):                                                              # Move right
                     col_start += 1
                     self.board[col_start][row_start] = color
             elif (col_start > col_end):
-                while (col_start > col_end):                        # Move left
+                while (col_start > col_end):                                                              # Move left
                     col_start -= 1
                     self.board[col_start][row_start] = color
         
@@ -192,7 +194,9 @@ class Board:
         WIN.blit(self.valid_moves_surface, (0, 0))
         return valid_squares
     
+    ##
     # Follow through direction checking for adjacent opponent's pieces to be flipped
+    #
     def check_direction(self, row, col, dir_x, dir_y, opp):
         target_row = row + dir_y
         target_col = col + dir_x
@@ -207,8 +211,10 @@ class Board:
 
             if (target_row >= 0 and target_col >=0 and target_row < BOARD_HEIGHT and target_col < BOARD_WIDTH and self.board[target_row][target_col] == EMPTY):
                 return (target_row, target_col)
-        
+    
+    ##    
     # Check if clicked move is valid
+    #
     def is_valid(self, pos, color):
         for lists in self.dict_of_valid_moves.values():
             if (pos in lists):
@@ -262,7 +268,7 @@ class Board:
             WIN.blit(game_over_text, game_over_rect)
 
             pygame.display.update()
-            pygame.time.delay(2000)  # Wait for 2 seconds before quitting
+            pygame.time.delay(2000)
 
             return self.game_status
         

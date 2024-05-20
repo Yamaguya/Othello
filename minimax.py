@@ -12,8 +12,15 @@ class Minimax:
                         [  6,   0, 3, 4, 3, 3,   0,   6],
                         [-30, -50, 0, 0, 0, 0, -50, -30],
                         [100, -30, 6, 2, 2, 6, -30, 100]]
-        
+
+    ##   
     # Minimax algorithm with alpha-beta pruning
+    # @param board: the current board state
+    # @param depth: the depth of the search tree
+    # @param alpha: the alpha value for alpha-beta pruning
+    # @param beta: the beta value for alpha-beta pruning
+    # @param maximizing_agent: a boolean value indicating whether the current agent is maximizing or minimizing
+    # @return: the best move if the depth is DEPTH, otherwise the evaluation score
     def minimax (self, board, depth, alpha, beta, maximizing_agent):
         # If the depth is 0 or the game is over, evaluate the board
         if depth == 0 or board.game_status:
