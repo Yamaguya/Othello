@@ -65,9 +65,10 @@ def main():
                     
                     board.get_valid_moves(current_color)            # Get valid moves for the player
             white_score_text, black_score_text = render_score_text(board)
-            # Blit score text onto the main surface
-            WIN.blit(white_score_text, (20, 20))
+            
+            WIN.blit(white_score_text, (20, 20))                    # Blit score text onto the main surface
             WIN.blit(black_score_text, (WINDOW_WIDTH - 120, 20))
+            
         pygame.display.update() 
 
     pygame.quit()                                                   # If loop breaks close game

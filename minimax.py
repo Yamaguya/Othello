@@ -23,7 +23,8 @@ class Minimax:
         valid_moves = board.get_valid_moves(WHITE if maximizing_agent else BLACK)
         best_move = None
 
-        if maximizing_agent:                                    # Computer's turn (maximizing agent)
+        # Computer's turn (maximizing agent)
+        if maximizing_agent:
             # Arbitrarily small initial value
             max_eval = -INF
             for moves in valid_moves.values():
@@ -41,7 +42,8 @@ class Minimax:
                     if beta <= alpha:
                         break
             return best_move if depth == DEPTH else max_eval
-        else:                                                   # Player's turn (minimizing agent)
+        # Player's turn (minimizing agent)
+        else:
             # Arbitrarily large initial value
             min_eval = INF
             best_move = None
